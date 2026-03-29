@@ -41,7 +41,7 @@ const CreditsPage = () => {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-20 sm:px-6 lg:px-8 space-y-20">
+    <div className="max-w-7xl mx-auto px-4 py-10 md:py-20 sm:px-6 lg:px-8 space-y-12 md:space-y-20">
       {/* Header */}
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
@@ -51,7 +51,7 @@ const CreditsPage = () => {
         <Link href="/" className="group flex items-center text-blue-600 font-bold hover:underline underline-offset-4">
           <HiOutlineArrowLeft className="mr-2 w-5 h-5 transition-transform group-hover:-translate-x-1" /> Back to Home
         </Link>
-        <h1 className="text-5xl lg:text-7xl font-black text-slate-900 dark:text-slate-100 italic leading-tight">
+        <h1 className="text-4xl md:text-5xl lg:text-7xl font-black text-slate-900 dark:text-slate-100 italic leading-tight">
           Credits & <span className="text-blue-600">Appreciation.</span>
         </h1>
         <p className="text-xl text-slate-500 dark:text-slate-400 max-w-2xl leading-relaxed">
@@ -91,10 +91,10 @@ const CreditsPage = () => {
       </section>
 
       {/* Contact Section */}
-      <section className="bg-slate-50 dark:bg-slate-900 rounded-[3rem] p-12 lg:p-20 border border-slate-200 dark:border-slate-800 transition-colors duration-300">
+      <section className="bg-slate-50 dark:bg-slate-900 rounded-4xl md:rounded-[3rem] p-6 sm:p-8 md:p-12 lg:p-20 border border-slate-200 dark:border-slate-800 transition-colors duration-300">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
-            <h2 className="text-4xl font-black text-slate-900 dark:text-slate-100 italic">Get in <span className="text-blue-600">Touch.</span></h2>
+            <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-slate-100 italic">Get in <span className="text-blue-600">Touch.</span></h2>
             <p className="text-lg text-slate-500 dark:text-slate-400 leading-relaxed">
               Have questions about our credits or technical inquiries? Reach out to our team anytime.
             </p>
@@ -129,7 +129,7 @@ const CreditsPage = () => {
             </div>
           </div>
           
-          <div className="relative aspect-square lg:aspect-auto h-full min-h-[400px] rounded-3xl overflow-hidden shadow-2xl">
+          <div className="relative aspect-square lg:aspect-auto w-full max-w-[280px] sm:max-w-[360px] lg:max-w-none mx-auto h-full min-h-[280px] md:min-h-[400px] rounded-3xl overflow-hidden shadow-2xl">
             <Image 
               src="/good.jpeg" 
               alt="Our Team" 
@@ -137,9 +137,9 @@ const CreditsPage = () => {
               className="object-cover"
             />
             <div className="absolute inset-0 bg-blue-600/20 mix-blend-multiply" />
-            <div className="absolute bottom-10 left-10 text-white space-y-1">
-              <p className="text-5xl font-black italic">Team Leader</p>
-              <p className="text-sm font-medium flex items-center gap-2">Built with <HiOutlineHeart className="text-red-500" /> for the community.</p>
+            <div className="absolute bottom-6 left-6 md:bottom-10 md:left-10 text-white space-y-1">
+              <p className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black italic">Team Leader</p>
+              <p className="text-xs sm:text-sm font-medium flex items-center gap-1 sm:gap-2">Built with <HiOutlineHeart className="text-red-500 shrink-0" /> for the community.</p>
             </div>
           </div>
         </div>
