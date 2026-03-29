@@ -13,6 +13,7 @@ import {
   HiOutlineArrowRight
 } from 'react-icons/hi';
 import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const CartPage = () => {
@@ -39,28 +40,20 @@ const CartPage = () => {
   const tax = totalAmount * 0.1;
   const grandTotal = totalAmount + shipping + tax;
 
+  const router = useRouter();
+
+  React.useEffect(() => {
+    if (items.length === 0) {
+      toast.error('Your cart is empty! Order something.', {
+        icon: '🛒',
+        duration: 3000,
+      });
+      router.push('/shopping');
+    }
+  }, [items.length, router]);
+
   if (items.length === 0) {
-    return (
-      <div className="max-w-7xl mx-auto px-4 py-24 flex flex-col items-center justify-center text-center space-y-6">
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          className="p-8 bg-slate-100 dark:bg-slate-900 rounded-full"
-        >
-          <HiOutlineShoppingBag className="w-20 h-20 text-slate-400" />
-        </motion.div>
-        <h2 className="text-3xl font-black text-slate-900 dark:text-slate-100">Your cart is empty</h2>
-        <p className="text-slate-500 dark:text-slate-400 max-w-md">
-          Looks like you haven't added anything to your cart yet. Explore our products and find something you love.
-        </p>
-        <Link 
-          href="/shopping" 
-          className="px-8 py-4 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 shadow-xl shadow-blue-500/20 transition-all active:scale-95 flex items-center gap-2"
-        >
-          Start Shopping <HiOutlineArrowRight className="w-5 h-5" />
-        </Link>
-      </div>
-    );
+    return null;
   }
 
   return (
@@ -82,7 +75,7 @@ const CartPage = () => {
                 exit={{ opacity: 0, x: 20 }}
                 className="flex flex-col sm:flex-row items-center gap-6 p-6 bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm transition-all hover:shadow-md"
               >
-                <div className="relative w-32 h-32 flex-shrink-0 bg-slate-100 dark:bg-slate-700 rounded-2xl overflow-hidden">
+                <div className="relative w-32 h-32 shrink-0 bg-slate-100 dark:bg-slate-700 rounded-2xl overflow-hidden">
                   <Image
                     src={item.image}
                     alt={item.name}
@@ -91,7 +84,7 @@ const CartPage = () => {
                   />
                 </div>
 
-                <div className="flex-grow flex flex-col justify-between h-full space-y-4 sm:space-y-0">
+                <div className="grow flex flex-col justify-between h-full space-y-4 sm:space-y-0">
                   <div className="flex justify-between items-start">
                     <div>
                       <span className="text-xs font-bold text-blue-600 uppercase tracking-widest">{item.category}</span>

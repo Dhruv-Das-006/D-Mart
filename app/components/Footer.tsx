@@ -53,7 +53,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
           {/* Brand Column */}
           <div className="flex flex-col space-y-4">
-            <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent italic">
+            <Link href="/" className="text-2xl font-bold bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent italic">
               Beans
             </Link>
             <p className="text-slate-600 dark:text-slate-400 text-sm max-w-xs leading-relaxed">
@@ -61,7 +61,7 @@ const Footer = () => {
             </p>
             <div className="flex items-center gap-4 pt-2">
               <a 
-                href="https://github.com/Dhruv-Das-006" 
+                href="https://github.com/Dhruv-Das-006/D-Mart.git" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="p-2.5 bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:text-blue-600 dark:hover:text-blue-400 transition-all active:scale-90 flex items-center gap-2 font-bold text-sm"

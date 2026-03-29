@@ -10,8 +10,34 @@ import {
   HiOutlineArrowLeft
 } from 'react-icons/hi';
 import { motion } from 'framer-motion';
+import { useAppSelector } from '@/lib/redux/hooks';
+import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
 const OrderTrackingPage = () => {
+  const router = useRouter();
+  const { items } = useAppSelector((state) => state.cart);
+
+  React.useEffect(() => {
+    const hasOrdered = sessionStorage.getItem('hasOrdered');
+    
+    if (items.length === 0 && !hasOrdered) {
+      toast.error('Order something first to track it!', {
+        icon: '📦',
+        duration: 3000,
+      });
+      router.push('/shopping');
+    }
+
+    // Clean up the flag after checking or when leaving
+    return () => {
+    };
+  }, [items.length, router]);
+
+  if (items.length === 0 && (typeof window !== 'undefined' && !sessionStorage.getItem('hasOrdered'))) {
+    return null;
+  }
+
   const steps = [
     { title: 'Ordered', icon: HiOutlineCheckCircle, date: 'Mar 24', completed: true },
     { title: 'Supplying', icon: HiOutlineCube, date: 'Mar 25', completed: true },
@@ -46,12 +72,12 @@ const OrderTrackingPage = () => {
           
           <div className="flex flex-col md:flex-row justify-between items-center gap-8 md:gap-0 relative">
             {/* Connecting Line */}
-            <div className="hidden md:block absolute top-[2.25rem] left-[10%] right-[10%] h-1 bg-slate-100 dark:bg-slate-700 -z-0" />
+            <div className="hidden md:block absolute top-9 left-[10%] right-[10%] h-1 bg-slate-100 dark:bg-slate-700 z-0" />
             <motion.div 
               initial={{ width: '0%' }}
               animate={{ width: '50%' }}
               transition={{ duration: 1.5, ease: "easeOut", delay: 0.5 }}
-              className="hidden md:block absolute top-[2.25rem] left-[10%] h-1 bg-blue-600 -z-0" 
+              className="hidden md:block absolute top-9 left-[10%] h-1 bg-blue-600 z-0" 
             />
 
             {steps.map((step, index) => (

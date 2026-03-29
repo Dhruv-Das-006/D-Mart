@@ -34,7 +34,7 @@ const LoginPage = () => {
         className="max-w-md w-full p-10 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl shadow-blue-500/5 transition-colors duration-300"
       >
         <div className="flex flex-col space-y-2 mb-10 text-center">
-          <Link href="/" className="text-3xl font-black italic bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent w-fit mx-auto mb-4">
+          <Link href="/" className="text-3xl font-black italic bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent w-fit mx-auto mb-4">
             Beans
           </Link>
           <h2 className="text-3xl font-black text-slate-900 dark:text-slate-100">Welcome Back</h2>

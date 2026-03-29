@@ -35,6 +35,7 @@ const PaymentPage = () => {
     setTimeout(() => {
       setIsProcessing(false);
       setIsSuccess(true);
+      sessionStorage.setItem('hasOrdered', 'true');
       dispatch(clearCart());
       toast.success('Payment Successful!', {
         icon: '🎉',
@@ -45,8 +46,17 @@ const PaymentPage = () => {
     }, 2500);
   };
 
+  React.useEffect(() => {
+    if (items.length === 0 && !isSuccess) {
+      toast.error('Add something to your cart first!', {
+        icon: '🛒',
+        duration: 3000,
+      });
+      router.push('/shopping');
+    }
+  }, [items.length, isSuccess, router]);
+
   if (items.length === 0 && !isSuccess) {
-    router.push('/shopping');
     return null;
   }
 

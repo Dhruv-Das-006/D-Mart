@@ -28,7 +28,7 @@ export const products: Product[] = [
     name: 'Ergonomic Wireless Mouse',
     price: 79.99,
     category: 'Electronics',
-    image: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a44?auto=format&fit=crop&q=80&w=400',
+    image: 'https://images.unsplash.com/photo-1760348213144-ca09c79214f8?q=80&w=1629&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
   },
   
   // Fashion
@@ -60,14 +60,14 @@ export const products: Product[] = [
     name: 'Minimalist Desk Lamp',
     price: 34.99,
     category: 'Home & Living',
-    image: 'https://images.unsplash.com/photo-1507473885765-e6ed657f99ad?auto=format&fit=crop&q=80&w=400',
+    image: 'https://images.unsplash.com/photo-1621447980929-6638614633c8?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8TWluaW1hbGlzdCUyMERlc2slMjBMYW1wfGVufDB8fDB8fHww',
   },
   {
     id: '9',
     name: 'Aromatic Soy Candle Set',
     price: 24.99,
     category: 'Home & Living',
-    image: 'https://images.unsplash.com/photo-1603006766419-f00e9643edb1?auto=format&fit=crop&q=80&w=400',
+    image: 'https://images.unsplash.com/photo-1623826550935-f2c22e79a52e?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8QXJvbWF0aWMlMjBTb3klMjBDYW5kbGUlMjBTZXR8ZW58MHx8MHx8fDA%3D',
   },
   {
     id: '10',
