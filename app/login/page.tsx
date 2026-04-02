@@ -2,6 +2,9 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useAppDispatch } from '@/lib/redux/hooks';
+import { setCredentials } from '@/lib/redux/slices/authSlice';
 import { FaGoogle, FaGithub } from 'react-icons/fa';
 import { HiOutlineMail, HiOutlineLockClosed, HiOutlineEye, HiOutlineEyeOff } from 'react-icons/hi';
 import { motion } from 'framer-motion';
@@ -11,15 +14,41 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const dispatch = useAppDispatch();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
       toast.error('Please fill in all fields');
       return;
     }
-    toast.success('Successfully logged in!');
-    // Redirect logic would go here
+    
+    setIsLoading(true);
+    const loadingToast = toast.loading('Logging in...');
+    
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      
+      const data = await res.json();
+      
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to login');
+      }
+      
+      dispatch(setCredentials({ user: data.user }));
+      toast.success('Successfully logged in!', { id: loadingToast });
+      router.push('/shopping');
+    } catch (err: any) {
+      toast.error(err.message, { id: loadingToast });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSocialLogin = (platform: string) => {
@@ -85,9 +114,11 @@ const LoginPage = () => {
 
           <button
             type="submit"
-            className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-black text-lg rounded-2xl shadow-xl shadow-blue-500/30 transition-all hover:scale-[1.02] active:scale-95 mt-4"
+            disabled={isLoading}
+            className="w-full py-4 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-black text-lg rounded-2xl shadow-xl shadow-blue-500/30 transition-all hover:scale-[1.02] active:scale-95 mt-4 flex items-center justify-center space-x-2"
           >
-            Sign In
+            {isLoading && <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>}
+            <span>Sign In</span>
           </button>
         </form>
 

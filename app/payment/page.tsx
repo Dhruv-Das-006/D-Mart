@@ -19,20 +19,41 @@ const PaymentPage = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { totalAmount, items } = useAppSelector((state) => state.cart);
+  const { isAuthenticated, isLoading, user } = useAppSelector(state => state.auth);
   const [paymentMethod, setPaymentMethod] = useState('card');
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+
+  React.useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      toast.error('Please login or signup to perform payment.', { id: 'auth-guard' });
+      router.push('/login');
+    }
+  }, [isAuthenticated, isLoading, router]);
 
   const shipping = totalAmount > 500 ? 0 : 25;
   const tax = totalAmount * 0.1;
   const grandTotal = totalAmount + shipping + tax;
 
-  const handlePayment = (e: React.FormEvent) => {
+  const handlePayment = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsProcessing(true);
     
-    // Simulate payment processing
-    setTimeout(() => {
+    setTimeout(async () => {
+      try {
+        // Save to History using api
+        await fetch('/api/history', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId: user?.id,
+            items: items,
+            totalAmount: grandTotal,
+            date: new Date().toISOString()
+          })
+        });
+      } catch (err) {}
+
       setIsProcessing(false);
       setIsSuccess(true);
       sessionStorage.setItem('hasOrdered', 'true');
@@ -43,7 +64,7 @@ const PaymentPage = () => {
       });
       // Redirect to Order Tracking directly
       router.push('/order-tracking');
-    }, 2500);
+    }, 2000);
   };
 
   React.useEffect(() => {
@@ -56,8 +77,14 @@ const PaymentPage = () => {
     }
   }, [items.length, isSuccess, router]);
 
-  if (items.length === 0 && !isSuccess) {
-    return null;
+  if (isLoading || !isAuthenticated || (items.length === 0 && !isSuccess)) {
+    return (
+      <div className="min-h-[50vh] flex items-center justify-center">
+        {(isLoading || !isAuthenticated) ? (
+           <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        ) : null}
+      </div>
+    );
   }
 
   if (isSuccess) {

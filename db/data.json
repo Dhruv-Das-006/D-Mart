@@ -1,0 +1,30 @@
+{
+  "users": [
+    {
+      "id": "UirbgDdPt34",
+      "name": "Dhruv",
+      "email": "dhruvdas006@gmail.com",
+      "password": "Geenius197903"
+    }
+  ],
+  "history": [
+    {
+      "userId": "UirbgDdPt34",
+      "items": [
+        {
+          "id": "1",
+          "name": "Ultra HD 4K Monitor",
+          "price": 499.99,
+          "category": "Electronics",
+          "image": "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&q=80&w=400",
+          "quantity": 6,
+          "totalPrice": 2999.9399999999996
+        }
+      ],
+      "totalAmount": 3299.9339999999997,
+      "date": "2026-04-02T09:54:08.405Z",
+      "id": "fd6eTwT2c1U"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}

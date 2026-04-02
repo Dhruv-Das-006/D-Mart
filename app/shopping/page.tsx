@@ -1,16 +1,36 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAppSelector } from '@/lib/redux/hooks';
 import { products, categories } from '@/lib/data';
 import ProductCard from '../components/ProductCard';
 import { motion, AnimatePresence } from 'framer-motion';
+import toast from 'react-hot-toast';
 
 const ShoppingPage = () => {
   const [activeCategory, setActiveCategory] = useState('All');
+  const { isAuthenticated, isLoading } = useAppSelector(state => state.auth);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      toast.error('Please login or signup to view our premium collection.', { id: 'auth-guard' });
+      router.push('/login');
+    }
+  }, [isAuthenticated, isLoading, router]);
 
   const filteredProducts = activeCategory === 'All' 
     ? products 
     : products.filter(p => p.category === activeCategory);
+
+  if (isLoading || !isAuthenticated) {
+    return (
+      <div className="min-h-[50vh] flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8 space-y-12">

@@ -2,6 +2,9 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useAppDispatch } from '@/lib/redux/hooks';
+import { setCredentials } from '@/lib/redux/slices/authSlice';
 import { FaGoogle, FaGithub } from 'react-icons/fa';
 import { HiOutlineMail, HiOutlineLockClosed, HiOutlineUser, HiOutlineEye, HiOutlineEyeOff } from 'react-icons/hi';
 import { motion } from 'framer-motion';
@@ -9,6 +12,9 @@ import toast from 'react-hot-toast';
 
 const SignupPage = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const dispatch = useAppDispatch();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -16,7 +22,7 @@ const SignupPage = () => {
     terms: false
   });
 
-  const handleSignup = (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.password) {
       toast.error('Please fill in all fields');
@@ -26,7 +32,35 @@ const SignupPage = () => {
       toast.error('Please agree to the Terms of Service');
       return;
     }
-    toast.success('Account created successfully!');
+    
+    setIsLoading(true);
+    const loadingToast = toast.loading('Creating account...');
+    
+    try {
+      const res = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          name: formData.name, 
+          email: formData.email, 
+          password: formData.password 
+        }),
+      });
+      
+      const data = await res.json();
+      
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to create account');
+      }
+      
+      dispatch(setCredentials({ user: data.user }));
+      toast.success('Account created successfully!', { id: loadingToast });
+      router.push('/shopping');
+    } catch (err: any) {
+      toast.error(err.message, { id: loadingToast });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSocialSignup = (platform: string) => {
@@ -41,7 +75,7 @@ const SignupPage = () => {
         className="max-w-md w-full p-10 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl shadow-blue-500/5 transition-colors duration-300"
       >
         <div className="flex flex-col space-y-2 mb-8 text-center">
-          <Link href="/" className="text-3xl font-black italic bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent w-fit mx-auto mb-4">
+          <Link href="/" className="text-3xl font-black italic bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent w-fit mx-auto mb-4">
             Beans
           </Link>
           <h2 className="text-3xl font-black text-slate-900 dark:text-slate-100 italic">Create <span className="text-blue-600">Account.</span></h2>
@@ -113,9 +147,11 @@ const SignupPage = () => {
 
           <button
             type="submit"
-            className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-black text-lg rounded-2xl shadow-xl shadow-blue-500/30 transition-all hover:scale-[1.02] active:scale-95 mt-4"
+            disabled={isLoading}
+            className="w-full py-4 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-black text-lg rounded-2xl shadow-xl shadow-blue-500/30 transition-all hover:scale-[1.02] active:scale-95 mt-4 flex items-center justify-center space-x-2"
           >
-            Create Free Account
+            {isLoading && <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>}
+            <span>Create Free Account</span>
           </button>
         </form>
 

@@ -4,7 +4,9 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTheme } from './CustomThemeProvider';
-import { useAppSelector } from '@/lib/redux/hooks';
+import { useAppSelector, useAppDispatch } from '@/lib/redux/hooks';
+import { setCredentials, logout, setLoading } from '@/lib/redux/slices/authSlice';
+import toast from 'react-hot-toast';
 import { 
   HiOutlineShoppingBag, 
   HiOutlineSun, 
@@ -20,15 +22,51 @@ const Navbar = () => {
   const [mounted, setMounted] = useState(false);
   const { theme, setTheme, resolvedTheme } = useTheme();
   const pathname = usePathname();
+  const dispatch = useAppDispatch();
   const totalQuantity = useAppSelector((state) => state.cart.totalQuantity);
+  const { isAuthenticated, user, isLoading } = useAppSelector((state) => state.auth);
 
   // Avoid hydration mismatch
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    setMounted(true);
+    // Check Auth
+    const checkAuth = async () => {
+      try {
+        const res = await fetch('/api/auth/me');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.authenticated) {
+            dispatch(setCredentials({ user: data.user }));
+          } else {
+            dispatch(setLoading(false));
+          }
+        } else {
+          dispatch(setLoading(false));
+        }
+      } catch (err) {
+        dispatch(setLoading(false));
+      }
+    };
+    checkAuth();
+  }, [dispatch]);
+
+  const handleLogout = async () => {
+    try {
+      const res = await fetch('/api/auth/logout', { method: 'POST' });
+      if (res.ok) {
+        dispatch(logout());
+        toast.success('Successfully logged out!');
+      }
+    } catch(err) {
+      toast.error('Logout failed');
+    }
+  };
 
   const navLinks = [
     { name: 'Home', href: '/' },
     { name: 'Shopping', href: '/shopping' },
     { name: 'Cart', href: '/cart' },
+    ...(isAuthenticated ? [{ name: 'History', href: '/history' }] : []),
   ];
 
   const toggleTheme = () => {
@@ -86,12 +124,25 @@ const Navbar = () => {
 
             {/* Auth Buttons */}
             <div className="flex items-center space-x-2 pl-4 border-l border-slate-200 dark:border-slate-800">
-              <Link href="/login" className="px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                Login
-              </Link>
-              <Link href="/signup" className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-all shadow-md active:scale-95">
-                Sign Up
-              </Link>
+              {isLoading ? (
+                <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+              ) : isAuthenticated ? (
+                <div className="flex items-center space-x-4">
+                  <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Hi, {user?.name}</span>
+                  <button onClick={handleLogout} className="px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors">
+                    Logout
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <Link href="/login" className="px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                    Login
+                  </Link>
+                  <Link href="/signup" className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-all shadow-md active:scale-95">
+                    Sign Up
+                  </Link>
+                </>
+              )}
             </div>
           </div>
 
@@ -138,20 +189,31 @@ const Navbar = () => {
                 </Link>
               ))}
               <div className="pt-4 flex flex-col space-y-2 px-3 border-t border-slate-100 dark:border-slate-800">
-                <Link
-                  href="/login"
-                  onClick={() => setIsOpen(false)}
-                  className="w-full text-center py-2 text-slate-700 dark:text-slate-200 font-medium"
-                >
-                  Login
-                </Link>
-                <Link
-                  href="/signup"
-                  onClick={() => setIsOpen(false)}
-                  className="w-full text-center py-2 bg-blue-600 text-white rounded-lg font-medium shadow-md"
-                >
-                  Sign Up
-                </Link>
+                {isAuthenticated ? (
+                  <button
+                    onClick={() => { handleLogout(); setIsOpen(false); }}
+                    className="w-full text-center py-2 bg-red-600 text-white rounded-lg font-medium shadow-md"
+                  >
+                    Logout
+                  </button>
+                ) : (
+                  <>
+                    <Link
+                      href="/login"
+                      onClick={() => setIsOpen(false)}
+                      className="w-full text-center py-2 text-slate-700 dark:text-slate-200 font-medium"
+                    >
+                      Login
+                    </Link>
+                    <Link
+                      href="/signup"
+                      onClick={() => setIsOpen(false)}
+                      className="w-full text-center py-2 bg-blue-600 text-white rounded-lg font-medium shadow-md"
+                    >
+                      Sign Up
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           </motion.div>

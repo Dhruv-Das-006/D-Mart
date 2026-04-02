@@ -19,6 +19,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 const CartPage = () => {
   const dispatch = useAppDispatch();
   const { items, totalAmount, totalQuantity } = useAppSelector((state) => state.cart);
+  const { isAuthenticated, isLoading } = useAppSelector(state => state.auth);
+  const router = useRouter();
+
+  React.useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      toast.error('Please login or signup to view your cart.', { id: 'auth-guard' });
+      router.push('/login');
+    }
+  }, [isAuthenticated, isLoading, router]);
 
   const handleRemove = (id: string, name: string) => {
     dispatch(removeItemFromCart(id));
@@ -40,20 +49,24 @@ const CartPage = () => {
   const tax = totalAmount * 0.1;
   const grandTotal = totalAmount + shipping + tax;
 
-  const router = useRouter();
-
   React.useEffect(() => {
-    if (items.length === 0) {
+    if (isAuthenticated && !isLoading && items.length === 0) {
       toast.error('Your cart is empty! Order something.', {
         icon: '🛒',
         duration: 3000,
       });
       router.push('/shopping');
     }
-  }, [items.length, router]);
+  }, [items.length, router, isAuthenticated, isLoading]);
 
-  if (items.length === 0) {
-    return null;
+  if (isLoading || !isAuthenticated || items.length === 0) {
+    return (
+      <div className="min-h-[50vh] flex items-center justify-center">
+        {(isLoading || !isAuthenticated) ? (
+           <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        ) : null}
+      </div>
+    );
   }
 
   return (
